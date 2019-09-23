@@ -1,0 +1,18 @@
+galaxy_info:
+  role_name: f5-role-facts
+  author: focrensh
+  description: Example Role for Facts
+  company: F5 Networks
+  license: Apache
+  platforms:
+    - name: BIG-IP
+      versions:
+        - all
+
+  min_ansible_version: 2.7
+
+  galaxy_tags:
+    - f5
+    - bigip
+
+dependencies: []

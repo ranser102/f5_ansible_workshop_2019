@@ -1,0 +1,42 @@
+---
+# tasks file for roles/f5_role_service
+- name: CREATE NODES
+  bigip_node:
+    provider: "{{provider}}"
+    host: "{{hostvars[item].ansible_host}}"
+    name: "{{hostvars[item].inventory_hostname}}"
+  loop: "{{ groups['webservers'] }}"
+
+- name: CREATE POOL
+  bigip_pool:
+    provider: "{{provider}}"
+    name: "{{user_pool}}"
+    lb_method: "round-robin"
+    monitors: "/Common/{{user_monitor}}"
+    monitor_type: "and_list"
+
+- name: ADD POOL MEMBERS
+  bigip_pool_member:
+    provider: "{{provider}}"
+    state: "present"
+    name: "{{hostvars[item].inventory_hostname}}"
+    host: "{{hostvars[item].ansible_host}}"
+    port: "{{user_port}}"
+    pool: "{{user_pool}}"
+  loop: "{{ groups['webservers'] }}"
+
+- name: ADD VIRTUAL SERVER
+  bigip_virtual_server:
+    provider: "{{provider}}"
+    name: "{{user_vip}}"
+    destination: "{{private_ip}}"
+    port: "{{user_vip_port}}"
+    enabled_vlans: "all"
+    all_profiles: ['http','clientssl','oneconnect']
+    pool: "{{user_pool}}"
+    snat: "Automap"
+
+- name: PRINT OUT WEB VIP FOR F5
+  debug:
+    msg: "The VIP (Virtual IP) is https://{{ansible_host}}"
+

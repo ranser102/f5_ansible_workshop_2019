@@ -1,0 +1,22 @@
+---
+- name: Role Playbook
+  hosts: f5
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+  - include_role:
+      name: focrensh.f5_role_facts
+
+#  - include_role:
+#      name: f5_create_pool
+
+#  - include_role:
+#      name: f5_role_service
+
+#  - include_role:
+#      name: f5_role_as3
+
+  - include_role:
+      name: f5_enable_disable_pool_member      
